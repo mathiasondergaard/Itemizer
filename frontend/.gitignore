@@ -1,0 +1,18 @@
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+
+### Jetbrains ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+*.txt
+todo.txt
+.txt

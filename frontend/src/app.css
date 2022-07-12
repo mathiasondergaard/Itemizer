@@ -1,0 +1,15 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+table, th, td {
+    border: 1px solid;
+}
+th, .center {
+    text-align: center;
+}
+.nav :global(.pagination-nav) {
+    border: 1px solid black;
+    border-radius: 10px;
+}
