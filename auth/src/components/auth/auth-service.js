@@ -15,7 +15,7 @@ const key = fs.readFileSync('private-key.pem');
 
 
 // USERS
-
+// needs method in controller for wms to post to
 exports.createUserForEmployee = async (employee, transaction) => {
 
     const rolesToFind = ['USER'];
@@ -35,9 +35,10 @@ exports.createUserForEmployee = async (employee, transaction) => {
     if (!rolesToAdd) {
         return false;
     }
-
+    
     // Generate random password
-    const password = crypto.randomBytes(6).toString('hex')
+    const password = crypto.randomBytes(6).toString('hex');
+    
     const userToCreate = {
         username: generateUsername(employee.name),
         email: employee.email,

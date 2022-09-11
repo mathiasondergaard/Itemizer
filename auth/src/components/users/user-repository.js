@@ -4,15 +4,13 @@ const {AppError} = require('../../error');
 
 const moduleName = 'user-repository.js -';
 
-exports.create = async (user, transaction) => {
+exports.create = async (user) => {
 
     const _user = await User.create({
         username: user.username,
         email: user.email,
         password: user.password,
         employee_id: user.employee.id,
-    }, {
-        transaction
     });
 
     if (_user[0] === 0) {
@@ -33,12 +31,6 @@ exports.findAll = async () => {
         include: [{
             association: 'roles',
             attributes: ['id', 'role']
-        }, {
-            association: 'employee',
-            include: {
-                association: 'address',
-                attributes: ['zip', 'street', 'country', 'city'],
-            }
         }],
     });
 
@@ -116,12 +108,6 @@ exports.findByUsername = async (username) => {
         include: [{
             association: 'roles',
             attributes: ['id', 'role']
-        }, {
-            association: 'employee',
-            include: {
-                association: 'address',
-                attributes: ['zip', 'street', 'country', 'city'],
-            }
         }],
     });
 

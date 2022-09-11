@@ -17,22 +17,25 @@ exports.create = async (body) => {
     };
 
     const employeeIsCreated = await employeeRepository.create(employeeToCreate, transaction);
+
     if (!employeeIsCreated) {
         await transaction.rollback();
         return false;
     }
-    const userIsCreated = await authService.createUserForEmployee(
-        employeeIsCreated,
-        transaction);
 
-    if (!userIsCreated) {
+    const userIsCreated = await fetch(`${process.env.AUTH_URI}/users`, {
+        method: 'POST',
+        body: JSON.stringify({name: employeeIsCreated.name, title: employeeIsCreated.title, email: employeeIsCreated.email}),
+    });
+
+    if (userIsCreated.status !== 201) {
         await transaction.rollback();
         return false;
     }
 
     await transaction.commit();
 
-    return await authService.findByUsername(userIsCreated.username);
+    return true;
 };
 
 exports.delete = async (id) => {
@@ -80,21 +83,19 @@ exports.updateTitle = async (employeeToUpdate, loggedInEmployee) => {
 };
 
 
-exports.findEmployeeDetails = async (id, userId) => {
+exports.findEmployeeDetails = async (id) => {
     const employee = await employeeRepository.findById(id);
-    const user = await authService.findUserById(userId);
     const address = employee.address;
 
     delete employee.address;
 
-    if (!employee || !user) {
+    if (!employee) {
         return false;
     }
 
     return {
         employee: employee,
         address: address,
-        user: user,
     };
 };
 
@@ -107,8 +108,6 @@ exports.findNameAndTitleById = async (id) => {
 };
 
 exports.updateOwnDetails = async (details) => {
-    const transaction = await db.sequelize.transaction();
-
     const employeeToUpdate = {
         id: details.employee.id,
         name: details.employee.name,
@@ -117,21 +116,11 @@ exports.updateOwnDetails = async (details) => {
         address: details.employee.address,
     };
 
-    const userToUpdate = {
-        id: details.user.id,
-        username: details.user.username,
-        email: details.employee.email
-    };
+    const updatedEmployee = await employeeRepository.update(employeeToUpdate);
 
-    const updatedEmployee = await employeeRepository.update(employeeToUpdate, transaction);
-    const updatedUser = await authService.updateUser(userToUpdate, transaction);
-
-    if (!updatedEmployee || !updatedUser) {
-        await transaction.rollback();
+    if (!updatedEmployee) {
         return false;
     }
-
-    await transaction.commit();
 
     return true;
 }

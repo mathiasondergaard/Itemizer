@@ -18,8 +18,8 @@ exports.create = async (req, res, next) => {
         return next(new AppError('Failed to create employee!', 500, true));
     }
 
-    logger.info(`${moduleName} successfully created employee ${JSON.stringify(created)}`);
-    return res.status(201).send(created);
+    logger.info(`${moduleName} successfully created employee and user`);
+    return res.status(201).send();
 
 };
 
@@ -76,14 +76,14 @@ exports.findById = async (req, res, next) => {
 };
 
 exports.findEmployeeDetails = async (req, res, next) => {
-    const employeeDetails = await employeeService.findEmployeeDetails(req.employeeId, req.userId);
+    const employeeDetails = await employeeService.findEmployeeDetails(req.employeeId);
 
     if (!employeeDetails) {
-        logger.error(`${moduleName} failed to find employee details emp ${req.employeeId} user ${req.userId}`);
+        logger.error(`${moduleName} failed to find employee details emp ${req.employeeId}`);
         return next(new AppError('Failed to find employee details!', 500, true));
     }
 
-    logger.info(`${moduleName} successfully found employee details emp ${req.employeeId} user ${req.userId}`);
+    logger.info(`${moduleName} successfully found employee details emp ${req.employeeId}`);
     return res.status(200).send(employeeDetails);
 
 };
@@ -95,7 +95,6 @@ exports.editOwnDetails = async (req, res, next) => {
     }
 
     req.body.employee.id = req.employeeId;
-    req.body.user.id = req.userId;
 
     const updated = await employeeService.updateOwnDetails(req.body);
 

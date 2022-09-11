@@ -32,6 +32,18 @@ const User = db.sequelize.define('users', {
             },
         },
     },
+    isVerified: {
+        type: db.Sequelize.BOOLEAN,
+        allowNull: false,
+        default: false,
+        validate: {
+            allowNull: false,
+        },
+        //todo: is not added to other layers yet
+    },
+    employee_id: {
+        //todo: do this model
+    }
 });
 
 User.belongsToMany(db.sequelize.models.roles, {
@@ -46,12 +58,6 @@ Role.belongsToMany(db.sequelize.models.users, {
     as: 'roles',
     foreignKey: 'role_id'
 })
-
-User.belongsTo(db.sequelize.models.employees, {
-    as: 'employee',
-    foreignKey: 'employee_id',
-    onDelete: 'CASCADE',
-});
 
 module.exports = User;
 

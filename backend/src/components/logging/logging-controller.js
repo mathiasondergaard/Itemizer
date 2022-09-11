@@ -14,7 +14,7 @@ exports.collectLogs = async (req, res, next) => {
         return next(new AppError('Failed to export logs!', 500, true));
     }
 
-    const filePath = path.join(__basedir, '/downloads/logs/full_logs.zip');
+    const filePath = path.join(__basedir, '/resources/downloads/logs/full_logs.zip');
 
     logger.info(`${moduleName} successfully exported logs`);
     res.status(200).download(filePath, fileName);
